@@ -6,7 +6,7 @@
 ```javascript
 WeekCalendar([func1],[func2])
 ```
-func1为选择日期时的调用方法<br>
-func2为切换年，月和星期后的回调方法
+>>>>func1为选择日期时的调用方法（可不填）<br>
+>>>>func2为切换年，月和星期后的回调方法（可不填）
 ## 示例图
 ![](https://github.com/cpa0701/demoPic/blob/master/weekCalendarDemo.png)
