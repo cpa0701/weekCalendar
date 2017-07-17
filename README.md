@@ -1,4 +1,4 @@
-# weekCalendar
+# weekCalendar(周历)
 >>>看了网上有很多日历插件，但却没有一个周历插件，正好公司有需求，所以就小试牛刀一把做了个周历插件；
 ## Usage:
 >>>需要demo中的html代码，并引入jq,css,js
