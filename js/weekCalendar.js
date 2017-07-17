@@ -117,6 +117,19 @@ var WeekCalendar = function (func1, func2) {
                 weekCalendar_plugin.initWeekCalendar(weekCalendar_plugin.StartDay, weekCalendar_plugin.EndDay, weekCalendar_plugin.nowDay, weekCalendar_plugin.nowYear, weekCalendar_plugin.startDateMonth);
                 $(".wcDate>li.active").removeClass('active');
             });
+            //鼠标移入月份和日期时背景变化
+            $(".wcDate>li,.wcMonth>li").mouseover(function (e) {
+                if ($(e.target).attr("data-month")) {
+                    $(".wcMonth>li.mouseActive").removeClass('mouseActive');
+                    $(this).addClass("mouseActive");
+                } else if ($(e.target).children().length != 0) {
+                    $(".wcDate>li.mouseActive").removeClass('mouseActive');
+                    $(this).addClass("mouseActive");
+                }
+            }).mouseleave(function (e) {
+                $(".wcMonth>li.mouseActive").removeClass('mouseActive');
+                $(".wcDate>li.mouseActive").removeClass('mouseActive');
+            });
         },
 
         //获得当前日，月，年

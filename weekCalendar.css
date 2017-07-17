@@ -66,6 +66,13 @@ ul.wcMonth > li.today {
     color: #fff;
 }
 
+ul.wcMonth > li.mouseActive {
+    -webkit-animation: bgChange .7s linear both;
+    animation: bgChange .7s linear both;
+    background: #5b99ee;
+    color: #fff;
+}
+
 ul.wcDate {
     height: 70px;
     width: 1225px;
@@ -112,6 +119,14 @@ ul.wcDate > li.active {
     color: #fff;
 }
 
+ul.wcDate > li.mouseActive {
+    -webkit-animation: bgChange .7s linear both;
+    animation: bgChange .7s linear both;
+    background-color: #5b99ee;
+    border-radius: 50%;
+    color: #fff;
+}
+
 @keyframes bgChange {
     from {
         background: transparent;
@@ -126,5 +141,9 @@ ul.wcDate > li.today > span:last-of-type {
 }
 
 ul.wcDate > li.active > span:last-of-type {
+    color: #fff;
+}
+
+ul.wcDate > li.mouseActive > span:last-of-type {
     color: #fff;
 }
