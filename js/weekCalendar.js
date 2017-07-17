@@ -42,7 +42,6 @@ var WeekCalendar = function (func1, func2) {
                 var monthDays = weekCalendar_plugin.getMonthDays(weekCalendar_plugin.nowYear, weekCalendar_plugin.startDateMonth);
                 var startMonthDate = weekCalendar_plugin.getMonthStartDate(weekCalendar_plugin.nowYear, weekCalendar_plugin.startDateMonth);
                 if ($(e.target).text().indexOf("上周") != -1) {
-
                     StartDay = parseInt($(".wcDate>li:eq(1)").children('span:first-of-type').text()) - 7;
                     EndDay = parseInt($(".wcDate>li:eq(7)").children('span:first-of-type').text()) - 7;
                     if (StartDay < 1 && EndDay < 1) {
@@ -65,7 +64,13 @@ var WeekCalendar = function (func1, func2) {
                         monthDays = weekCalendar_plugin.getMonthDays(weekCalendar_plugin.nowYear, weekCalendar_plugin.startDateMonth);
                         EndDay = monthDays + EndDay;
                     }
+                    weekCalendar_plugin.nowMonth = weekCalendar_plugin.getPositiveMonth(weekCalendar_plugin.nowMonth) % 12 + 1;
+                    if (weekCalendar_plugin.nowMonth < 10) {
+                        weekCalendar_plugin.nowMonth = "0" + weekCalendar_plugin.nowMonth;
+                    }
                     $(".wcDate>li.active").removeClass('active');
+                    weekCalendar_plugin.getNowDate(weekCalendar_plugin.nowYear + '-' + weekCalendar_plugin.nowMonth + '-' + StartDay);
+                    weekCalendar_plugin.getStartAndEndDay();
                     weekCalendar_plugin.initWeekCalendar(StartDay, EndDay, weekCalendar_plugin.nowDay, weekCalendar_plugin.nowYear, weekCalendar_plugin.startDateMonth);
                 } else if ($(e.target).text().indexOf("下周") != -1) {
                     StartDay = parseInt($(".wcDate>li:eq(1)").children('span:first-of-type').text()) + 7;
@@ -86,13 +91,22 @@ var WeekCalendar = function (func1, func2) {
                             weekCalendar_plugin.nowYear += 1;
                         }
                     }
+                    weekCalendar_plugin.nowMonth = weekCalendar_plugin.getPositiveMonth(weekCalendar_plugin.nowMonth) % 12 + 1;
+                    if (weekCalendar_plugin.nowMonth < 10) {
+                        weekCalendar_plugin.nowMonth = "0" + weekCalendar_plugin.nowMonth;
+                    }
                     $(".wcDate>li.active").removeClass('active');
+                    weekCalendar_plugin.getNowDate(weekCalendar_plugin.nowYear + '-' + weekCalendar_plugin.nowMonth + '-' + StartDay);
+                    weekCalendar_plugin.getStartAndEndDay();
                     weekCalendar_plugin.initWeekCalendar(StartDay, EndDay, weekCalendar_plugin.nowDay, weekCalendar_plugin.nowYear, weekCalendar_plugin.startDateMonth);
                 } else {
                     $(".wcDate>li.active").removeClass('active');
-                    $(this).addClass("active");
+                    $(this).addClass('active');
+                    weekCalendar_plugin.getNowDate($(".wcDate>li.active").attr("data-date"));
+                    weekCalendar_plugin.getStartAndEndDay();
+                    weekCalendar_plugin.initWeekCalendar(weekCalendar_plugin.StartDay, weekCalendar_plugin.EndDay, weekCalendar_plugin.nowDay, weekCalendar_plugin.nowYear, weekCalendar_plugin.startDateMonth);
                     if (func1)
-                        func1(weekCalendar_plugin.nowYear, weekCalendar_plugin.nowMonth, $(this).find("span:first-of-type").text(), $(this).find("span:last-of-type").text());
+                        func1($(this).attr("data-date").substr(0, 4), $(this).attr("data-date").substr(5, 2) - 1, $(this).attr("data-date").substr(8, 2), $(this).find("span:last-of-type").text());
                 }
             });
             //点击月份显示对应周历
@@ -126,12 +140,21 @@ var WeekCalendar = function (func1, func2) {
                     $(".wcDate>li.mouseActive").removeClass('mouseActive');
                     $(this).addClass("mouseActive");
                 }
-            }).mouseleave(function (e) {
+            }).mouseleave(function () {
                 $(".wcMonth>li.mouseActive").removeClass('mouseActive');
                 $(".wcDate>li.mouseActive").removeClass('mouseActive');
             });
         },
-
+        //获得正数月数
+        getPositiveMonth: function (month) {
+            var i = 0;
+            do {
+                month = month + 12 * i;
+                i++;
+            }
+            while (month < 0);
+            return month;
+        },
         //获得当前日，月，年
         getNowDate: function (date) {
             if (date)
@@ -148,6 +171,13 @@ var WeekCalendar = function (func1, func2) {
             weekCalendar_plugin.weekStartDate = weekCalendar_plugin.getWeekStartDate();
             weekCalendar_plugin.weekEndDate = weekCalendar_plugin.getWeekEndDate();
             weekCalendar_plugin.startDateMonth = parseInt(weekCalendar_plugin.weekStartDate.substr(5, 2)) - 1;
+            $.each($(".wcDate").find('li'), function (a, b) {
+                if (a > 0 && a < 8) {
+                    var date = new Date(weekCalendar_plugin.nowYear, weekCalendar_plugin.nowMonth, weekCalendar_plugin.nowDay + (a - 1 - weekCalendar_plugin.nowDayOfWeek));
+                    date = weekCalendar_plugin.formatDate(date);
+                    $(b).attr("data-date", date);
+                }
+            });
             weekCalendar_plugin.StartDay = parseInt(weekCalendar_plugin.weekStartDate.substr(8, 2));
             weekCalendar_plugin.EndDay = parseInt(weekCalendar_plugin.weekEndDate.substr(8, 2));
         },
@@ -222,6 +252,7 @@ var WeekCalendar = function (func1, func2) {
             $(".wcYear").html('<i data-change="pre"></i>' + weekCalendar_plugin.nowYear + '<i data-change="next"></i>');
             //显示当前月
             $(".wcMonth").children('li').removeClass("active");
+            weekCalendar_plugin.nowMonth = weekCalendar_plugin.getPositiveMonth(weekCalendar_plugin.nowMonth) % 12;
             $(".wcMonth").children('li:eq(' + weekCalendar_plugin.nowMonth + ')').addClass("active");
             if (func2)
                 func2();
