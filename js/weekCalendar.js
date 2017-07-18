@@ -61,6 +61,9 @@ var WeekCalendar = function (func1, func2) {
                         StartDay = monthDays + StartDay;
                     } else if (StartDay >= 1 && EndDay < 1) {
                         weekCalendar_plugin.nowMonth = weekCalendar_plugin.startDateMonth;
+                        if (startMonthDate.indexOf("01-01") != -1) {
+                            weekCalendar_plugin.nowYear -= 1;
+                        }
                         monthDays = weekCalendar_plugin.getMonthDays(weekCalendar_plugin.nowYear, weekCalendar_plugin.startDateMonth);
                         EndDay = monthDays + EndDay;
                     }
@@ -84,6 +87,9 @@ var WeekCalendar = function (func1, func2) {
                         }
                     } else if (EndDay > monthDays && StartDay <= monthDays) {
                         EndDay = EndDay - monthDays;
+                        if (startMonthDate.indexOf("12-01") != -1) {
+                            weekCalendar_plugin.nowYear += 1;
+                        }
                     } else if (EndDay <= monthDays && StartDay > monthDays) {
                         StartDay = StartDay - monthDays;
                         weekCalendar_plugin.nowMonth = ++weekCalendar_plugin.startDateMonth;
