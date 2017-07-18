@@ -39,34 +39,43 @@ var WeekCalendar = function (func1, func2) {
             $(".wcDate>li").click(function (e) {
                 var StartDay = '';
                 var EndDay = '';
-                var monthDays = weekCalendar_plugin.getMonthDays(weekCalendar_plugin.nowYear, weekCalendar_plugin.startDateMonth);
-                var startMonthDate = weekCalendar_plugin.getMonthStartDate(weekCalendar_plugin.nowYear, weekCalendar_plugin.startDateMonth);
+                var lastWeekStartDate = '';
+                var lastWeekEndDate = '';
+                //var monthDays = weekCalendar_plugin.getMonthDays(weekCalendar_plugin.nowYear, weekCalendar_plugin.startDateMonth);
+                //var startMonthDate = weekCalendar_plugin.getMonthStartDate(weekCalendar_plugin.nowYear, weekCalendar_plugin.startDateMonth);
                 if ($(e.target).text().indexOf("上周") != -1) {
-                    StartDay = parseInt($(".wcDate>li:eq(1)").children('span:first-of-type').text()) - 7;
-                    EndDay = parseInt($(".wcDate>li:eq(7)").children('span:first-of-type').text()) - 7;
-                    if (StartDay < 1 && EndDay < 1) {
-                        weekCalendar_plugin.nowMonth = --weekCalendar_plugin.startDateMonth;
-                        if (startMonthDate.indexOf("01-01") != -1) {
-                            weekCalendar_plugin.nowYear -= 1;
-                        }
-                        monthDays = weekCalendar_plugin.getMonthDays(weekCalendar_plugin.nowYear, weekCalendar_plugin.startDateMonth);
-                        StartDay = monthDays + StartDay;
-                        EndDay = monthDays + EndDay;
-                    } else if (StartDay < 1 && EndDay >= 1) {
-                        weekCalendar_plugin.nowMonth = --weekCalendar_plugin.startDateMonth;
-                        if (startMonthDate.indexOf("01-01") != -1) {
-                            weekCalendar_plugin.nowYear -= 1;
-                        }
-                        monthDays = weekCalendar_plugin.getMonthDays(weekCalendar_plugin.nowYear, weekCalendar_plugin.startDateMonth);
-                        StartDay = monthDays + StartDay;
-                    } else if (StartDay >= 1 && EndDay < 1) {
-                        weekCalendar_plugin.nowMonth = weekCalendar_plugin.startDateMonth;
-                        if (startMonthDate.indexOf("01-01") != -1) {
-                            weekCalendar_plugin.nowYear -= 1;
-                        }
-                        monthDays = weekCalendar_plugin.getMonthDays(weekCalendar_plugin.nowYear, weekCalendar_plugin.startDateMonth);
-                        EndDay = monthDays + EndDay;
-                    }
+                    lastWeekStartDate = weekCalendar_plugin.getLastWeekDate(7);
+                    lastWeekEndDate = weekCalendar_plugin.getLastWeekDate(1);
+                    StartDay = parseInt(lastWeekStartDate.substr(8, 2));
+                    EndDay = parseInt(lastWeekEndDate.substr(8, 2));
+                    weekCalendar_plugin.nowMonth = parseInt(lastWeekStartDate.substr(5, 2)) - 1;
+                    weekCalendar_plugin.startDateMonth = weekCalendar_plugin.nowMonth;
+                    weekCalendar_plugin.nowYear = parseInt(lastWeekStartDate.substr(0, 4));
+                    //StartDay = parseInt($(".wcDate>li:eq(1)").children('span:first-of-type').text()) - 7;
+                    //EndDay = parseInt($(".wcDate>li:eq(7)").children('span:first-of-type').text()) - 7;
+                    //if (StartDay < 1 && EndDay < 1) {
+                    //    weekCalendar_plugin.nowMonth = --weekCalendar_plugin.startDateMonth;
+                    //    if (startMonthDate.indexOf("01-01") != -1) {
+                    //        weekCalendar_plugin.nowYear -= 1;
+                    //    }
+                    //    monthDays = weekCalendar_plugin.getMonthDays(weekCalendar_plugin.nowYear, weekCalendar_plugin.startDateMonth);
+                    //    StartDay = monthDays + StartDay;
+                    //    EndDay = monthDays + EndDay;
+                    //} else if (StartDay < 1 && EndDay >= 1) {
+                    //    weekCalendar_plugin.nowMonth = --weekCalendar_plugin.startDateMonth;
+                    //    if (startMonthDate.indexOf("01-01") != -1) {
+                    //        weekCalendar_plugin.nowYear -= 1;
+                    //    }
+                    //    monthDays = weekCalendar_plugin.getMonthDays(weekCalendar_plugin.nowYear, weekCalendar_plugin.startDateMonth);
+                    //    StartDay = monthDays + StartDay;
+                    //} else if (StartDay >= 1 && EndDay < 1) {
+                    //    weekCalendar_plugin.nowMonth = weekCalendar_plugin.startDateMonth;
+                    //    if (startMonthDate.indexOf("01-01") != -1) {
+                    //        weekCalendar_plugin.nowYear -= 1;
+                    //    }
+                    //    monthDays = weekCalendar_plugin.getMonthDays(weekCalendar_plugin.nowYear, weekCalendar_plugin.startDateMonth);
+                    //    EndDay = monthDays + EndDay;
+                    //}
                     weekCalendar_plugin.nowMonth = weekCalendar_plugin.getPositiveMonth(weekCalendar_plugin.nowMonth) % 12 + 1;
                     if (weekCalendar_plugin.nowMonth < 10) {
                         weekCalendar_plugin.nowMonth = "0" + weekCalendar_plugin.nowMonth;
@@ -74,29 +83,33 @@ var WeekCalendar = function (func1, func2) {
                     $(".wcDate>li.active").removeClass('active');
                     weekCalendar_plugin.getNowDate(weekCalendar_plugin.nowYear + '-' + weekCalendar_plugin.nowMonth + '-' + StartDay);
                     weekCalendar_plugin.getStartAndEndDay();
-                    weekCalendar_plugin.initWeekCalendar(StartDay, EndDay, weekCalendar_plugin.nowDay, weekCalendar_plugin.nowYear, weekCalendar_plugin.startDateMonth);
+                    weekCalendar_plugin.initWeekCalendar(StartDay, EndDay, weekCalendar_plugin.theDay, weekCalendar_plugin.nowYear, weekCalendar_plugin.startDateMonth);
                 } else if ($(e.target).text().indexOf("下周") != -1) {
-                    StartDay = parseInt($(".wcDate>li:eq(1)").children('span:first-of-type').text()) + 7;
-                    EndDay = parseInt($(".wcDate>li:eq(7)").children('span:first-of-type').text()) + 7;
-                    if (EndDay > monthDays && StartDay > monthDays) {
-                        EndDay = EndDay - monthDays;
-                        StartDay = StartDay - monthDays;
-                        weekCalendar_plugin.nowMonth = ++weekCalendar_plugin.startDateMonth;
-                        if (startMonthDate.indexOf("12-01") != -1) {
-                            weekCalendar_plugin.nowYear += 1;
-                        }
-                    } else if (EndDay > monthDays && StartDay <= monthDays) {
-                        EndDay = EndDay - monthDays;
-                        if (startMonthDate.indexOf("12-01") != -1) {
-                            weekCalendar_plugin.nowYear += 1;
-                        }
-                    } else if (EndDay <= monthDays && StartDay > monthDays) {
-                        StartDay = StartDay - monthDays;
-                        weekCalendar_plugin.nowMonth = ++weekCalendar_plugin.startDateMonth;
-                        if (startMonthDate.indexOf("12-01") != -1) {
-                            weekCalendar_plugin.nowYear += 1;
-                        }
-                    }
+                    //StartDay = parseInt($(".wcDate>li:eq(1)").children('span:first-of-type').text()) + 7;
+                    //EndDay = parseInt($(".wcDate>li:eq(7)").children('span:first-of-type').text()) + 7;
+                    //if (EndDay > monthDays && StartDay > monthDays) {
+                    //    EndDay = EndDay - monthDays;
+                    //    StartDay = StartDay - monthDays;
+                    //    weekCalendar_plugin.nowMonth = ++weekCalendar_plugin.startDateMonth;
+                    //    if (startMonthDate.indexOf("12-01") != -1) {
+                    //        weekCalendar_plugin.nowYear += 1;
+                    //    }
+                    //} else if (EndDay > monthDays && StartDay <= monthDays) {
+                    //    EndDay = EndDay - monthDays;
+                    //} else if (EndDay <= monthDays && StartDay > monthDays) {
+                    //    StartDay = StartDay - monthDays;
+                    //    weekCalendar_plugin.nowMonth = ++weekCalendar_plugin.startDateMonth;
+                    //    if (startMonthDate.indexOf("12-01") != -1) {
+                    //        weekCalendar_plugin.nowYear += 1;
+                    //    }
+                    //}
+                    lastWeekStartDate = weekCalendar_plugin.getLastWeekDate(-7);
+                    lastWeekEndDate = weekCalendar_plugin.getLastWeekDate(-13);
+                    StartDay = parseInt(lastWeekStartDate.substr(8, 2));
+                    EndDay = parseInt(lastWeekEndDate.substr(8, 2));
+                    weekCalendar_plugin.nowMonth = parseInt(lastWeekStartDate.substr(5, 2)) - 1;
+                    weekCalendar_plugin.startDateMonth = weekCalendar_plugin.nowMonth;
+                    weekCalendar_plugin.nowYear = parseInt(lastWeekStartDate.substr(0, 4));
                     weekCalendar_plugin.nowMonth = weekCalendar_plugin.getPositiveMonth(weekCalendar_plugin.nowMonth) % 12 + 1;
                     if (weekCalendar_plugin.nowMonth < 10) {
                         weekCalendar_plugin.nowMonth = "0" + weekCalendar_plugin.nowMonth;
@@ -104,13 +117,13 @@ var WeekCalendar = function (func1, func2) {
                     $(".wcDate>li.active").removeClass('active');
                     weekCalendar_plugin.getNowDate(weekCalendar_plugin.nowYear + '-' + weekCalendar_plugin.nowMonth + '-' + StartDay);
                     weekCalendar_plugin.getStartAndEndDay();
-                    weekCalendar_plugin.initWeekCalendar(StartDay, EndDay, weekCalendar_plugin.nowDay, weekCalendar_plugin.nowYear, weekCalendar_plugin.startDateMonth);
+                    weekCalendar_plugin.initWeekCalendar(StartDay, EndDay, weekCalendar_plugin.theDay, weekCalendar_plugin.nowYear, weekCalendar_plugin.startDateMonth);
                 } else {
                     $(".wcDate>li.active").removeClass('active');
                     $(this).addClass('active');
                     weekCalendar_plugin.getNowDate($(".wcDate>li.active").attr("data-date"));
                     weekCalendar_plugin.getStartAndEndDay();
-                    weekCalendar_plugin.initWeekCalendar(weekCalendar_plugin.StartDay, weekCalendar_plugin.EndDay, weekCalendar_plugin.nowDay, weekCalendar_plugin.nowYear, weekCalendar_plugin.startDateMonth);
+                    weekCalendar_plugin.initWeekCalendar(weekCalendar_plugin.StartDay, weekCalendar_plugin.EndDay, weekCalendar_plugin.theDay, weekCalendar_plugin.nowYear, weekCalendar_plugin.startDateMonth);
                     if (func1)
                         func1($(this).attr("data-date").substr(0, 4), $(this).attr("data-date").substr(5, 2) - 1, $(this).attr("data-date").substr(8, 2), $(this).find("span:last-of-type").text());
                 }
@@ -151,6 +164,39 @@ var WeekCalendar = function (func1, func2) {
                 $(".wcDate>li.mouseActive").removeClass('mouseActive');
             });
         },
+        //获得上周或下周开头结尾日期
+        getLastWeekDate: function (n) {
+            var now = new Date($(".wcDate>li:eq(1)").attr('data-date'));
+            var year = now.getFullYear();
+            //因为月份是从0开始的,所以获取这个月的月份数要加1才行
+            var month = now.getMonth() + 1;
+            var date = now.getDate();
+            var day = now.getDay();
+            //判断是否为周日,如果不是的话,就让今天的day-1(例如星期二就是2-1)
+            if (day !== 0) {
+                n = n + (day - 1);
+            }
+            else {
+                n = n + day;
+            }
+            if (day) {
+                //这个判断是为了解决跨年的问题
+                if (month > 1) {
+                    //month = month;
+                }
+                //这个判断是为了解决跨年的问题,月份是从0开始的
+                else {
+                    year = year - 1;
+                    month = 12;
+                }
+            }
+            now.setDate(now.getDate() - n);
+            year = now.getFullYear();
+            month = now.getMonth() + 1;
+            date = now.getDate();
+            s = year + "-" + (month < 10 ? ('0' + month) : month) + "-" + (date < 10 ? ('0' + date) : date);
+            return s;
+        },
         //获得正数月数
         getPositiveMonth: function (month) {
             var i = 0;
@@ -165,14 +211,17 @@ var WeekCalendar = function (func1, func2) {
         getNowDate: function (date) {
             if (date)
                 weekCalendar_plugin.now = new Date(date); //当前日期
-            else
+            else {
                 weekCalendar_plugin.now = new Date(); //当前日期
+                weekCalendar_plugin.theDay = weekCalendar_plugin.now.getDate(); //当前日
+            }
             weekCalendar_plugin.nowDayOfWeek = weekCalendar_plugin.now.getDay(); //今天本周的第几天
             weekCalendar_plugin.nowDay = weekCalendar_plugin.now.getDate(); //当前日
             weekCalendar_plugin.nowMonth = weekCalendar_plugin.now.getMonth(); //当前月
             weekCalendar_plugin.nowYear = weekCalendar_plugin.now.getYear(); //当前年
             weekCalendar_plugin.nowYear += (weekCalendar_plugin.nowYear < 2000) ? 1900 : 0; //
         },
+        //获得本周开头结尾日期
         getStartAndEndDay: function () {
             weekCalendar_plugin.weekStartDate = weekCalendar_plugin.getWeekStartDate();
             weekCalendar_plugin.weekEndDate = weekCalendar_plugin.getWeekEndDate();
