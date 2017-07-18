@@ -102,7 +102,6 @@ var WeekCalendar = function (func1, func2) {
                 } else {
                     $(".wcDate>li.active").removeClass('active');
                     $(this).addClass('active');
-                    
                     weekCalendar_plugin.getNowDate($(".wcDate>li.active").attr("data-date"));
                     weekCalendar_plugin.getStartAndEndDay();
                     weekCalendar_plugin.initWeekCalendar(weekCalendar_plugin.StartDay, weekCalendar_plugin.EndDay, weekCalendar_plugin.nowDay, weekCalendar_plugin.nowYear, weekCalendar_plugin.startDateMonth);
